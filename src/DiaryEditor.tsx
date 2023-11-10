@@ -1,20 +1,24 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 const DiaryEditor=()=>{
     const [state, setState] =  useState({
         autor:"",
-        content:""
+        content:"",
+        emotion:1,
     });
 
-    const handleChange = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)=>{
-        setState({...state,[e.target.name]:e.target.value});//    
+    const handleChange = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement| HTMLSelectElement>)=>{
+        setState({...state,[e.target.name]:e.target.value});
     }
 
-    useEffect(()=>{
-        console.log(state);
-        
-    },[state]);
+
+   
     
+    const handleSubmit = ()=>{
+        console.log(state);
+        alert('저장이 완료되었습니다');
+        
+    }
     
     return(
         <div className="DiaryEditor">
@@ -23,7 +27,11 @@ const DiaryEditor=()=>{
                 name="autor"
                 placeholder="autor를 입력하세요"
                 value={state.autor} 
-                onChange={handleChange}
+                onChange={(e)=>{
+                   let tmp = {...state};
+                   tmp.autor = e.target.value;
+                   setState(tmp);
+                }}
 
             />
             <div>
@@ -35,7 +43,9 @@ const DiaryEditor=()=>{
             </div>
 
             <div>
-                <select>
+                <text style={{fontSize:12}}>오늘의 감정 점수 :</text>
+                <select
+                   name="emotion" value={state.emotion} onChange={handleChange}>
                     <option value={1}>1</option>
                     <option value={2}>2</option>
                     <option value={3}>3</option>
@@ -43,6 +53,7 @@ const DiaryEditor=()=>{
                     <option value={5}>5</option>
                 </select>
             </div>
+            <button onClick={()=>handleSubmit()}>일기 저장하기</button>
         </div>
     ) 
 }
