@@ -12,9 +12,6 @@ const DiaryEditor = () => {
     const handleChange = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement| HTMLSelectElement>)=>{
         setState({...state,[e.target.name]:e.target.value});
     }
-
-
-   
     
     const handleSubmit = ()=>{
         if (state.autor.length < 1) {
