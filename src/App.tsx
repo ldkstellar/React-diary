@@ -10,6 +10,7 @@ export type Info = {
   created_date:number
 };
 
+
 const dummyList:Info[] = [
   {
     id:1,
