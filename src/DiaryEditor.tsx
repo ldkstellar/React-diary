@@ -1,13 +1,22 @@
 import { ChangeEvent, useRef, useState } from "react";
-
-const DiaryEditor = () => {
+import { func } from "./App";
+import { myCreate } from "./App";
+import { Info } from "./App";
+interface oncreate {
+    onCreate:myCreate;
+}
+const DiaryEditor = ({onCreate}:oncreate) => {
+    
+    
     const autorInput = useRef<HTMLInputElement>(null);
     const textInput= useRef<HTMLTextAreaElement>(null);
-    const [state, setState] =  useState({
-        autor:"",
-        content:"",
-        emotion:1,
-    });
+    const [state, setState] =  useState(
+        {
+            autor:"",
+            content:"",
+            emotion:1
+        }
+    );
 
     const handleChange = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement| HTMLSelectElement>)=>{
         setState({...state,[e.target.name]:e.target.value});
@@ -25,8 +34,13 @@ const DiaryEditor = () => {
             return;
 
         }
-        console.log(state);
+        onCreate(state.autor,state.content,state.emotion);
         alert('저장이 완료되었습니다');
+        setState({
+            autor:"",
+            content:"",
+            emotion:1
+        });
         
     }
     
