@@ -9,45 +9,12 @@ export type Info = {
   emotion:number
   createDate:number
 };
-
-export type func = { onCreate:(a:string,b:string,c:number) => void};
+export type ondelete = (targetId:number)=>void;
+export type func = {onCreate:(autor:string,content:string,emotion:number) =>void};
 
 export type myCreate = (autor:string,content:string,emotion:number)=>void;
 
-// const dummyList:Info[] = [
-//   {
-//     id:1,
-//     autor:"이정환",
-//     content:"hi",
-//     emotion:5,
-//     created_date: new Date().getTime(),
-//   },
-//   {
-//     id:2,
-//     autor:"이동규",
-//     content:"hi",
-//     emotion:5,
-//     created_date: new Date().getTime(),
-//   },
-//   {
-//     id:3,
-//     autor:"박지성",
-//     content:"hi",
-//     emotion:5,
-//     created_date: new Date().getTime(),
-//   },
-//   {
-//     id:4,
-//     autor:"황희찬",
-//     content:"hi",
-//     emotion:5,
-//     created_date: new Date().getTime(),
-//   },
-// ] ;
-
-
 function App() {
- 
   const  dataId = useRef(0);
   const [data,setData] = useState<Info[]>([]);
   const onCreate:myCreate =(autor:string,content:string,emotion:number)=>{
@@ -60,13 +27,18 @@ function App() {
       id:dataId.current,
     };
     dataId.current+=1;
-    setData([newItem,...data]);
+    setData((prev)=>[newItem,...prev]);
   };
 
+  const onDelete:ondelete = (targetId)=>{
+    
+    const newDiaryList = data.filter((it)=>it.id !== targetId);
+    setData(newDiaryList);
+  }
   return (
     <div className="App">
       <DiaryEditor onCreate={onCreate}/>
-      <DiaryList setList={data}/>
+      <DiaryList onDelete={onDelete} setList={data}/>
     </div>
   );
 }

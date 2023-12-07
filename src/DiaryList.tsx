@@ -1,11 +1,13 @@
 import {Info} from './App';
 import DiaryItem from './DiaryItem';
+import { ondelete } from './App';
 interface Props{
     setList?:Info[]
 }
 
+
 // 타입스크립트는 default props를 이렇게 하는 것을 권장 한다.
-const DiaryList = ({setList = []}:{setList?:Info[]})=>{
+const DiaryList = ({setList = [],onDelete}:{setList?:Info[],onDelete:ondelete})=>{
     return(
     <div className="DiaryList">
         <h2>일기 리스트</h2>
@@ -13,7 +15,7 @@ const DiaryList = ({setList = []}:{setList?:Info[]})=>{
         <div>
             {
             setList.map((e,i)=>(
-                <DiaryItem key={e.id} {...e}/>
+                <DiaryItem key={e.id} {...e} onDelete={onDelete}/>
                 )
             )
             }
