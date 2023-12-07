@@ -11,13 +11,12 @@ export type Info = {
 };
 export type ondelete = (targetId:number)=>void;
 export type func = {onCreate:(autor:string,content:string,emotion:number) =>void};
-
-export type myCreate = (autor:string,content:string,emotion:number)=>void;
-
+export type oncreate = (autor:string,content:string,emotion:number)=>void;
+export type onedit =(targetId:number,newContent:string)=>void
 function App() {
   const  dataId = useRef(0);
   const [data,setData] = useState<Info[]>([]);
-  const onCreate:myCreate =(autor:string,content:string,emotion:number)=>{
+  const onCreate:oncreate =(autor:string,content:string,emotion:number)=>{
     const createDate = new Date().getTime();
     const newItem ={
       autor,
@@ -31,14 +30,17 @@ function App() {
   };
 
   const onDelete:ondelete = (targetId)=>{
-    
     const newDiaryList = data.filter((it)=>it.id !== targetId);
     setData(newDiaryList);
+  }
+  const onEdit:onedit = (targetId,newContent)=>{
+    setData(data.map((it)=>it.id === targetId ?{...it,content:newContent}:it));
+
   }
   return (
     <div className="App">
       <DiaryEditor onCreate={onCreate}/>
-      <DiaryList onDelete={onDelete} setList={data}/>
+      <DiaryList onDelete={onDelete} onEdit={onEdit} setList={data} />
     </div>
   );
 }

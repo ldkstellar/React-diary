@@ -1,13 +1,11 @@
 import { ChangeEvent, useRef, useState } from "react";
 import { func } from "./App";
-import { myCreate } from "./App";
+import { oncreate } from "./App";
 import { Info } from "./App";
-interface oncreate {
-    onCreate:myCreate;
-}
-const DiaryEditor = ({onCreate}:oncreate) => {
-    
-    
+import { onedit } from "./App";
+
+const DiaryEditor = ({onCreate}:{onCreate:oncreate}) => {
+
     const autorInput = useRef<HTMLInputElement>(null);
     const textInput= useRef<HTMLTextAreaElement>(null);
     const [state, setState] =  useState(
@@ -23,17 +21,20 @@ const DiaryEditor = ({onCreate}:oncreate) => {
     }
     
     const handleSubmit = ()=>{
+
         if (state.autor.length < 1) {
             alert('최소 1글자 이상 입력해주세요');
             autorInput.current?.focus();
             return;
         }
+
         if(state.content.length <5){
             alert('최소 5글자 이상 입력해주세요');
             textInput.current?.focus();
             return;
 
         }
+
         onCreate(state.autor,state.content,state.emotion);
         alert('저장이 완료되었습니다');
         setState({
@@ -41,7 +42,6 @@ const DiaryEditor = ({onCreate}:oncreate) => {
             content:"",
             emotion:1
         });
-        
     }
     
     return(
