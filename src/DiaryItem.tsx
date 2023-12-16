@@ -1,4 +1,4 @@
-import { log } from "console";
+
 import { useRef, useState } from "react";
 import { Info, onedit } from "./App";
 import { ondelete } from "./App";
@@ -35,7 +35,6 @@ const DiaryItem = ({id,autor,content,emotion,createDate,onDelete,onEdit}:props)=
             alert('최소 5글자 이상 입력해주세요');
             textInput.current?.focus();
             return;
-
         }
         onEdit(id,localeContent);
         toggleIsEdit();
@@ -64,10 +63,7 @@ const DiaryItem = ({id,autor,content,emotion,createDate,onDelete,onEdit}:props)=
                         </>
                 }
         </div>
-        
-
     )
-
 }
 
 export default DiaryItem;
