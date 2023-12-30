@@ -1,5 +1,5 @@
 import './App.css';
-import { useState , useRef, useEffect} from 'react';
+import { useState , useRef, useEffect,useMemo} from 'react';
 import DiaryEditor from './DiaryEditor';
 import DiaryList from './DiaryList';
 
@@ -18,6 +18,8 @@ type tmp = {
   body:string,
 }
 
+type memo = ()=>{goodCount:number ,badCount:number,goodRatio:number};
+
 export type ondelete = (targetId:number)=>void;
 export type func = {onCreate:(autor:string,content:string,emotion:number) =>void};
 export type oncreate = (autor:string,content:string,emotion:number)=>void;
@@ -26,7 +28,6 @@ export type onedit =(targetId:number,newContent:string)=>void
 //https://jsonplaceholder.typicode.com/comments
 
 function App() {
-
   const getData = async ()=>{
     const res:tmp[] =  await fetch(`https://jsonplaceholder.typicode.com/comments`).then((res)=>res.json());
     const initData:Info[]  = res.slice(0,20).map((it)=>{
@@ -41,7 +42,6 @@ function App() {
     setData(initData);
   };
 
-
   useEffect(()=>{
     getData();
   },[]);
@@ -49,14 +49,14 @@ function App() {
   const dataId = useRef(0);
   const [data,setData] = useState<Info[]>([]);
   const onCreate:oncreate =(autor:string,content:string,emotion:number)=>{
-    const createDate = new Date().getTime();
-    const newItem ={
+  const createDate = new Date().getTime();
+  const newItem = {
       autor,
       content,
       emotion,
       createDate,
       id:dataId.current,
-    };
+  };
     dataId.current+=1;
     setData((prev)=>[newItem,...prev]);
   };
@@ -70,11 +70,31 @@ function App() {
     setData(data.map((it)=>it.id === targetId ?{...it,content:newContent}:it));
 
   }
+
+  const getDiaryAnalysis = useMemo(()=>{
+    console.log('일기 분석 시작');
+    const goodCount = data.filter((it)=>{
+       return it.emotion>=3;
+    }).length;
+    const badCount  =  data.length - goodCount;
+    const goodRatio = (goodCount/data.length) *100;
+    
+    return {goodCount,badCount,goodRatio};
+  },[data.length]
+  );
+  // 비구조 할당
+  const {goodCount,badCount,goodRatio} = getDiaryAnalysis;
   
   return (
     <div className="App">
      
       <DiaryEditor onCreate={onCreate}/>
+      <div>전체 일기 :{data.length}</div>
+      <div>기분 좋은 일기 개수:{goodCount}</div>
+      <div>기분이 나쁜 일기 개수:{badCount}</div>
+      <div>기분이 좋은 일기 비율:{goodRatio}%</div>
+
+    
       <DiaryList onDelete={onDelete} onEdit={onEdit} setList={data} />
     </div>
   );

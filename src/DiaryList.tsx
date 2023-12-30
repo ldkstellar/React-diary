@@ -15,7 +15,7 @@ const DiaryList = ({setList = [],onDelete,onEdit}:{setList?:Info[],onDelete:onde
         <div>
             {
             setList.map((e,i)=>(
-                <DiaryItem key={e.id} {...e} onDelete={onDelete} onEdit={onEdit}/>
+                <DiaryItem key={i} {...e} onDelete={onDelete} onEdit={onEdit}/>
                 )
             )
             }
