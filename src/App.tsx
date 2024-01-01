@@ -2,7 +2,7 @@ import './App.css';
 import { useState , useRef, useEffect,useMemo} from 'react';
 import DiaryEditor from './DiaryEditor';
 import DiaryList from './DiaryList';
-
+import OptimizeTest from './OptimizeTest';
 export type Info = {
   id:number,
   autor:string,
@@ -18,7 +18,6 @@ type tmp = {
   body:string,
 }
 
-type memo = ()=>{goodCount:number ,badCount:number,goodRatio:number};
 
 export type ondelete = (targetId:number)=>void;
 export type func = {onCreate:(autor:string,content:string,emotion:number) =>void};
@@ -28,7 +27,7 @@ export type onedit =(targetId:number,newContent:string)=>void
 //https://jsonplaceholder.typicode.com/comments
 
 function App() {
-  const getData = async ()=>{
+  const getData = async () =>{
     const res:tmp[] =  await fetch(`https://jsonplaceholder.typicode.com/comments`).then((res)=>res.json());
     const initData:Info[]  = res.slice(0,20).map((it)=>{
       return {
@@ -72,7 +71,6 @@ function App() {
   }
 
   const getDiaryAnalysis = useMemo(()=>{
-    console.log('일기 분석 시작');
     const goodCount = data.filter((it)=>{
        return it.emotion>=3;
     }).length;
@@ -87,6 +85,7 @@ function App() {
   
   return (
     <div className="App">
+      <OptimizeTest/>
      
       <DiaryEditor onCreate={onCreate}/>
       <div>전체 일기 :{data.length}</div>
