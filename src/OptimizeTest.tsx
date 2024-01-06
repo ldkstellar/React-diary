@@ -62,7 +62,6 @@ const OptimizeTest = ()=>{
                 <button onClick={()=>setObj({count:obj.count})}>B 버튼</button>       
                
             </div>
-
         </div>
     )
 }

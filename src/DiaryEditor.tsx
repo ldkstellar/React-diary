@@ -1,10 +1,11 @@
-import { ChangeEvent, useRef, useState } from "react";
+import React,{ ChangeEvent, useEffect, useRef, useState} from "react";
 import { func } from "./App";
 import { oncreate } from "./App";
 import { Info } from "./App";
 import { onedit } from "./App";
 
 const DiaryEditor = ({onCreate}:{onCreate:oncreate}) => {
+    useEffect(()=>console.log("Diaryeditor렌더"));
 
     const autorInput = useRef<HTMLInputElement>(null);
     const textInput= useRef<HTMLTextAreaElement>(null);
@@ -83,6 +84,5 @@ const DiaryEditor = ({onCreate}:{onCreate:oncreate}) => {
             <button onClick={()=>handleSubmit()}>일기 저장하기</button>
         </div>
     ) 
-}
-
-export default DiaryEditor;
+};
+export default React.memo(DiaryEditor);
