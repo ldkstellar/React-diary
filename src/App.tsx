@@ -13,7 +13,7 @@ export type Info = {
 };
 
 type tmp = {
-  postId:number,
+  id:number,
   name:string,
   email:string,
   body:string,
@@ -23,24 +23,28 @@ export type ondelete = (targetId:number)=>void;
 export type func = {onCreate:(autor:string,content:string,emotion:number) =>void};
 export type oncreate = (autor:string,content:string,emotion:number)=>void;
 export type onedit =(targetId:number,newContent:string)=>void
-
 //https://jsonplaceholder.typicode.com/comments
 
 function App() {
-  const dataId = useRef(0);
+  
   const [data,setData] = useState<Info[]>([]);
+  const dataId =useRef(0);
+ 
+  
+  
 
-  const getData = async () =>{
+  const getData = async ()=>{
     const res:tmp[] =  await fetch(`https://jsonplaceholder.typicode.com/comments`).then((res)=>res.json());
     const initData:Info[]  = res.slice(0,20).map((it)=>{
-      return {
-          id:it.postId,
-          autor:it.email,
-          content:it.body,
-          emotion:Math.floor(Math.random() * 5)+1,
-          createDate: new Date().getTime(),
-      }
-    });
+          return {
+              id:it.id,
+              autor:it.email,
+              content:it.body,
+              emotion:Math.floor(Math.random() * 5)+1,
+              createDate: new Date().getTime(),
+          }
+        });
+    dataId.current = initData[initData.length-1].id+1;
     setData(initData);
   };
 
@@ -62,22 +66,22 @@ function App() {
     setData((prev)=>[newItem,...prev]);
   },[]); 
 
-  const onDelete:ondelete = (targetId)=>{
-    const newDiaryList = data.filter((it)=>it.id !== targetId);
-    setData(newDiaryList);
-  }
+  const onDelete:ondelete = useCallback((targetId)=>{
+    // const newDiaryList = data.filter((it)=>it.id !== targetId);// usecallback때문에 최신데이터를 받을때 최신화를 시키지 못한다따라서 
+    setData((prev)=>prev.filter((it)=>it.id !== targetId));
+  },[]);
 
-  const onEdit:onedit = (targetId,newContent)=>{
-    setData(data.map((it)=>it.id === targetId ?{...it,content:newContent}:it));
+  const onEdit:onedit = useCallback((targetId,newContent)=>{
+    setData((prev)=>prev.map((it)=>it.id === targetId ? {...it,content:newContent}:it));
 
-  }
+  },[]);
 
   const getDiaryAnalysis = useMemo(()=>{
     const goodCount = data.filter((it)=>{
        return it.emotion>=3;
     }).length;
     const badCount  =  data.length - goodCount;
-    const goodRatio = (goodCount/data.length) *100;
+    const goodRatio = (goodCount/data.length) * 100;
     
     return {goodCount,badCount,goodRatio};
   },[data.length]
@@ -92,9 +96,7 @@ function App() {
       <div>기분 좋은 일기 개수:{goodCount}</div>
       <div>기분이 나쁜 일기 개수:{badCount}</div>
       <div>기분이 좋은 일기 비율:{goodRatio}%</div>
-
-    
-      <DiaryList onDelete={onDelete} onEdit={onEdit} setList={data} />
+      <DiaryList onDelete={onDelete} onEdit={onEdit} setList={data}/>
     </div>
   );
 }

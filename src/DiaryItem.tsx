@@ -1,7 +1,8 @@
 
-import { useRef, useState } from "react";
+import React,{ useEffect, useRef, useState } from "react";
 import { Info, onedit } from "./App";
 import { ondelete } from "./App";
+
 interface props{
     id:number,
     autor:string,
@@ -13,12 +14,14 @@ interface props{
 }
 
 const DiaryItem = ({id,autor,content,emotion,createDate,onDelete,onEdit}:props)=>{
+    
+    useEffect(()=>console.log(`${id}번째 아이템 렌더링`));
     const [isEdit,setIsEdit] = useState(false);
     const toggleIsEdit = ()=>setIsEdit(!isEdit);
     const [localeContent,setLocaleContent] = useState(content);
     const textInput = useRef<HTMLTextAreaElement>(null);
+    
     const handleRemove = ()=>{
-        console.log(id);
         if (window.confirm(`${id}번째 일기를 정말 삭제하시겠습니까?`)){
             onDelete(id);
         }
@@ -66,4 +69,4 @@ const DiaryItem = ({id,autor,content,emotion,createDate,onDelete,onEdit}:props)=
     )
 }
 
-export default DiaryItem;
+export default React.memo(DiaryItem);

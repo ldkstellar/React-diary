@@ -5,8 +5,6 @@ import { Info } from "./App";
 import { onedit } from "./App";
 
 const DiaryEditor = ({onCreate}:{onCreate:oncreate}) => {
-    useEffect(()=>console.log("Diaryeditor렌더"));
-
     const autorInput = useRef<HTMLInputElement>(null);
     const textInput= useRef<HTMLTextAreaElement>(null);
     const [state, setState] =  useState(
