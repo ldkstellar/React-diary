@@ -1,9 +1,9 @@
 import './App.css';
-import { useState, useRef, useCallback, useEffect, useMemo} from 'react';
+import {useState,useRef,useCallback,useEffect,useMemo, useReducer} from 'react';
 import DiaryEditor from './DiaryEditor';
 import DiaryList from './DiaryList';
 import OptimizeTest from './OptimizeTest';
-
+// https://jsonplaceholder.typicode.com/comments
 export type Info = {
   id:number,
   autor:string,
@@ -23,16 +23,59 @@ export type ondelete = (targetId:number)=>void;
 export type func = {onCreate:(autor:string,content:string,emotion:number) =>void};
 export type oncreate = (autor:string,content:string,emotion:number)=>void;
 export type onedit =(targetId:number,newContent:string)=>void
-//https://jsonplaceholder.typicode.com/comments
+
+interface init{
+  type:"INIT"
+  data:Info[]
+}
+interface create{
+  type:"CREATE"
+  data:Info
+}
+
+interface remove{
+  type:"REMOVE"
+  targetId:number
+  
+}
+interface edit{
+  type:"EDIT"
+  targetId:number,
+  newContent:string
+}
+
 
 function App() {
-  
-  const [data,setData] = useState<Info[]>([]);
-  const dataId =useRef(0);
- 
-  
-  
 
+  const reducer = (state:Info[],action:init | create|remove|edit)=>{
+    switch (action.type) {
+      case 'INIT':{
+        return action.data;
+      }
+
+      case 'CREATE':{
+        const created_date =  new Date().getTime();
+        const newItem = {...action.data,created_date};
+        return [newItem, ...state];
+      }
+
+      case 'REMOVE':{
+        return state.filter((it)=>it.id !== action.targetId);
+      }
+      
+      case 'EDIT':{
+        return state.map((it)=>it.id === action.targetId ? {...it,content:action.newContent}:it);
+
+      }
+      default:
+      return state;
+    }
+  }
+
+  const [data , dispatch] = useReducer(reducer,[]);
+
+  // const [data,setData] = useState<Info[]>([]);
+  const dataId = useRef(0);
   const getData = async ()=>{
     const res:tmp[] =  await fetch(`https://jsonplaceholder.typicode.com/comments`).then((res)=>res.json());
     const initData:Info[]  = res.slice(0,20).map((it)=>{
@@ -42,16 +85,16 @@ function App() {
               content:it.body,
               emotion:Math.floor(Math.random() * 5)+1,
               createDate: new Date().getTime(),
-          }
+          };
         });
     dataId.current = initData[initData.length-1].id+1;
-    setData(initData);
+    dispatch({type:"INIT",data:initData})
+    // setData(initData);
   };
-
+  
   useEffect(()=>{
     getData();
   },[]);
-
 
   const onCreate:oncreate = useCallback((autor:string,content:string,emotion:number)=>{
     const createDate = new Date().getTime();
@@ -63,17 +106,19 @@ function App() {
         id:dataId.current,
     };
     dataId.current+=1;
-    setData((prev)=>[newItem,...prev]);
+    dispatch({type:'CREATE',data:{autor,content,emotion,createDate,id:dataId.current}})
+    // setData((prev)=>[newItem,...prev]);
   },[]); 
 
   const onDelete:ondelete = useCallback((targetId)=>{
     // const newDiaryList = data.filter((it)=>it.id !== targetId);// usecallback때문에 최신데이터를 받을때 최신화를 시키지 못한다따라서 
-    setData((prev)=>prev.filter((it)=>it.id !== targetId));
+    // setData((prev)=>prev.filter((it)=>it.id !== targetId));
+    dispatch({type:"REMOVE",targetId})
   },[]);
 
   const onEdit:onedit = useCallback((targetId,newContent)=>{
-    setData((prev)=>prev.map((it)=>it.id === targetId ? {...it,content:newContent}:it));
-
+    // setData((prev)=>prev.map((it)=>it.id === targetId ? {...it,content:newContent}:it));
+    dispatch({type:"EDIT",targetId,newContent});
   },[]);
 
   const getDiaryAnalysis = useMemo(()=>{
@@ -95,7 +140,7 @@ function App() {
       <div>전체 일기 :{data.length}</div>
       <div>기분 좋은 일기 개수:{goodCount}</div>
       <div>기분이 나쁜 일기 개수:{badCount}</div>
-      <div>기분이 좋은 일기 비율:{goodRatio}%</div>
+      <div>기분이 좋은 일기 비율:{goodRatio}</div>
       <DiaryList onDelete={onDelete} onEdit={onEdit} setList={data}/>
     </div>
   );
