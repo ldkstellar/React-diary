@@ -1,10 +1,14 @@
-import React,{ ChangeEvent, useEffect, useRef, useState} from "react";
+import React,{ ChangeEvent, useContext, useEffect, useRef, useState} from "react";
 import { func } from "./App";
 import { oncreate } from "./App";
 import { Info } from "./App";
 import { onedit } from "./App";
+import { DiaryDispatchContext } from "./App";
+import {dispatchMemo} from"./App"
+const DiaryEditor = () => {
+    const {onCreate} = useContext(DiaryDispatchContext);
+  
 
-const DiaryEditor = ({onCreate}:{onCreate:oncreate}) => {
     const autorInput = useRef<HTMLInputElement>(null);
     const textInput= useRef<HTMLTextAreaElement>(null);
     const [state, setState] =  useState(
