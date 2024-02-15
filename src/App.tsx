@@ -18,46 +18,46 @@ type tmp = {
   name:string,
   email:string,
   body:string,
-}
+};
 
 export type ondelete = (targetId:number)=>void;
-export type func = {onCreate:(autor:string,content:string,emotion:number) =>void};
+export type func = {onCreate:(autor:string,content:string,emotion:number)=>void};
 export type oncreate = (autor:string,content:string,emotion:number)=>void;
-export type onedit =(targetId:number,newContent:string)=>void
+export type onedit =(targetId:number,newContent:string)=>void;
 
 interface init{
   type:"INIT",
   data:Info[]
-}
+};
 
 interface create{
   type:"CREATE",
   data:Info
-}
+};
 
 interface remove{
   type:"REMOVE",
   targetId:number
-}
+};
 
 interface edit{
   type:"EDIT",
   targetId:number,
   newContent:string
-}
-type FunctionWithGeneric<T> = () => T;
+};
+
 export interface dispatchMemo {
       onCreate:oncreate,
       onDelete:ondelete,
       onEdit:onedit,
 }
 
-export const DiaryStateContext = React.createContext<Info[] | undefined>(undefined);
+export const DiaryStateContext = React.createContext<Info[]|undefined>(undefined);
 export const DiaryDispatchContext = React.createContext<any|undefined>(undefined);
 
 function App(){
 
-  const reducer = (state:Info[],action:init | create|remove|edit)=>{
+  const reducer = (state:Info[],action:init|create|remove|edit)=>{
     switch (action.type) {
       case 'INIT':{
         return action.data;
@@ -98,7 +98,7 @@ function App(){
         });
     dataId.current = initData[initData.length-1].id+1;
     dispatch({type:"INIT",data:initData})
-    // setData(initData);
+  // setData(initData);
   };
   
   useEffect(()=>{
@@ -107,7 +107,7 @@ function App(){
 
   const onCreate:oncreate = useCallback((autor:string,content:string,emotion:number)=>{
     const createDate = new Date().getTime();
-    const newItem = {
+    const newItem ={
         autor,
         content,
         emotion,
@@ -117,18 +117,18 @@ function App(){
     dataId.current+=1;
     dispatch({type:'CREATE',data:{autor,content,emotion,createDate,id:dataId.current}})
     // setData((prev)=>[newItem,...prev]);
-  },[]); 
+  },[])
 
   const onDelete:ondelete = useCallback((targetId)=>{
     // const newDiaryList = data.filter((it)=>it.id !== targetId);// usecallback때문에 최신데이터를 받을때 최신화를 시키지 못한다따라서 
     // setData((prev)=>prev.filter((it)=>it.id !== targetId));
     dispatch({type:"REMOVE",targetId})
-  },[]);
+  },[])
 
   const onEdit:onedit = useCallback((targetId,newContent)=>{
     // setData((prev)=>prev.map((it)=>it.id === targetId ? {...it,content:newContent}:it));
     dispatch({type:"EDIT",targetId,newContent});
-  },[]);
+  },[])
 
   const memoizedDispatches = useMemo(()=>{
     return{
@@ -136,8 +136,7 @@ function App(){
       onDelete,
       onEdit,
     };
-
-  },[]);
+  },[])
 
   const getDiaryAnalysis = useMemo(()=>{
     const goodCount = data.filter((it)=>{
@@ -145,17 +144,16 @@ function App(){
     }).length;
     const badCount  =  data.length - goodCount;
     const goodRatio = (goodCount/data.length) * 100;
-    
     return {goodCount,badCount,goodRatio};
   },[data.length]
-  );
+  )
   // 비구조 할당
   const {goodCount,badCount,goodRatio} = getDiaryAnalysis;
   
   return (
     <DiaryStateContext.Provider value={data}>
       <DiaryDispatchContext.Provider value={memoizedDispatches}>
-
+        
         <div className="App">
           <DiaryEditor/>
           <div>전체 일기 :{data.length}</div>

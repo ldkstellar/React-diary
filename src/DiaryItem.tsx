@@ -1,6 +1,6 @@
 
 import React,{ useEffect, useRef, useState } from "react";
-import { Info, onedit } from "./App";
+import { onedit } from "./App";
 import { ondelete } from "./App";
 
 interface props{
@@ -25,7 +25,7 @@ const DiaryItem = ({id,autor,content,emotion,createDate,onDelete,onEdit}:props)=
         if (window.confirm(`${id}번째 일기를 정말 삭제하시겠습니까?`)){
             onDelete(id);
         }
-    };
+    }
 
     const quitEdit = ()=>{
         setIsEdit(false);
@@ -69,4 +69,4 @@ const DiaryItem = ({id,autor,content,emotion,createDate,onDelete,onEdit}:props)=
     )
 }
 
-export default React.memo(DiaryItem);
+export default React.memo(DiaryItem)

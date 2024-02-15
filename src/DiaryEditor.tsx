@@ -17,7 +17,7 @@ const DiaryEditor = () => {
             content:"",
             emotion:1
         }
-    );
+    )
 
     const handleChange = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement| HTMLSelectElement>)=>{
         setState({...state,[e.target.name]:e.target.value});
@@ -44,7 +44,7 @@ const DiaryEditor = () => {
             autor:"",
             content:"",
             emotion:1
-        });
+        })
     }
     
     return(
@@ -86,5 +86,6 @@ const DiaryEditor = () => {
             <button onClick={()=>handleSubmit()}>일기 저장하기</button>
         </div>
     ) 
-};
+}
+
 export default React.memo(DiaryEditor);
